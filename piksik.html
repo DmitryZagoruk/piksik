@@ -69,14 +69,26 @@ button{font-family:inherit}
 .shelf span{position:absolute;bottom:7px;font-size:21px}
 .rug{position:absolute;left:50%;bottom:8%;width:210px;height:44px;transform:translateX(-50%);border-radius:50%;background:#b9a8ff;border:4px solid #9a86f5}
 .room.night{background:repeating-linear-gradient(90deg,#3b3463 0 24px,#37305d 24px 48px)}
-.room.night .floor,.room.night .rug,.room.night .shelf{filter:brightness(.45)}
+.room.night .floor,.room.night .rug,.room.night .shelf,.room.night .bunting,.room.night .banner{filter:brightness(.45)}
+.bunting{position:absolute;left:-4%;right:-4%;top:2%;height:46px;display:none;z-index:1}
+.bunting svg{width:100%;height:100%;display:block}
+.banner{position:absolute;left:50%;top:10%;transform:translateX(-50%) rotate(-1.5deg);display:none;z-index:1;
+  background:#fffaf0;border:4px solid var(--ink);padding:8px 14px 10px;font-family:var(--mono);font-weight:800;font-size:15px;
+  line-height:1.25;text-align:center;color:var(--ink);box-shadow:5px 5px 0 rgba(43,33,64,.18);white-space:nowrap}
+.banner small{display:block;font-size:11px;font-weight:700;color:#6b6280;margin-top:2px}
+.banner .tri{display:flex;height:6px;margin:6px -14px -10px}
+.banner .tri i{flex:1}
+.room.holiday .bunting,.room.holiday .banner{display:block}
+.room.holiday .window{top:33%}
+.room.holiday .shelf{top:36%}
+@media (max-width:380px){.banner{font-size:13px}}
 .room.night .window{background:linear-gradient(#1b1940,#2e2a66)}
 .room.night .sun{background:#fff6c9;box-shadow:0 0 0 3px #e9e1a8;border-radius:50%}
 
 .pet{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);cursor:pointer;user-select:none;-webkit-user-select:none}
-.pet canvas{width:176px;height:176px;image-rendering:pixelated;display:block;animation:bob 1.6s ease-in-out infinite}
-.pet.baby canvas{width:136px;height:136px}
-.pet.egg canvas{width:150px;height:150px;animation:eggidle 2.4s ease-in-out infinite}
+.pet canvas{width:250px;height:250px;image-rendering:pixelated;display:block;animation:bob 1.6s ease-in-out infinite}
+.pet.baby canvas{width:204px;height:204px}
+.pet.egg canvas{width:190px;height:190px;animation:eggidle 2.4s ease-in-out infinite}
 .pet.sleep canvas{animation:breathe 3s ease-in-out infinite}
 .pet.jump canvas{animation:jump .5s ease-out}
 .pet.wobble canvas{animation:wobble .5s ease-in-out}
@@ -139,6 +151,9 @@ button{font-family:inherit}
 .item .nm{font-size:13px;font-weight:700}
 .item .pr{font-size:12px;margin-top:6px;font-weight:700;background:#fff4d6;border-radius:10px;display:inline-block;padding:3px 8px}
 .item .pr.coin{background:#eaf8ef}
+.item .slot{font-size:11px;color:var(--muted);margin-top:2px}
+.item.worn{outline:3px solid var(--accent)}
+.item .pr.own{background:#efe9ff;color:var(--accent)}
 
 .overlay{position:absolute;inset:0;background:rgba(23,18,31,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:18px}
 .overlay.on{display:flex}
@@ -179,7 +194,7 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
 
 <div class="phone" id="phone">
   <div class="head">
-    <div class="ava"><canvas id="ava" width="32" height="32"></canvas></div>
+    <div class="ava"><canvas id="ava" width="60" height="60"></canvas></div>
     <div class="t"><div class="name" id="hName">Яйцо</div><div class="stage" id="hStage">кто же там внутри?</div></div>
     <div class="chip" title="Дней подряд">🔥 <span id="streak">1</span></div>
     <div class="chip" title="Монетки">🪙 <span id="coins">120</span></div>
@@ -194,13 +209,15 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
       <div class="stat"><span class="ic">⚡</span><div class="bar" id="b-energy"><i></i></div>энергия</div>
     </div>
     <div class="room" id="room">
+      <div class="bunting" id="bunting"></div>
+      <div class="banner">С Днём<br>народного единства!<small>4 ноября</small><div class="tri"><i style="background:#fff"></i><i style="background:#1c57d6"></i><i style="background:#d52b1e"></i></div></div>
       <div class="window"><div class="sun"></div></div>
       <div class="shelf"><span style="left:5px">🪴</span><span style="left:50px">📚</span></div>
       <div class="floor"></div><div class="rug"></div>
       <div class="warm" id="warm">🔥 Тепло: 0 / 10</div>
       <div class="bubble" id="bubble"></div>
       <div class="zzz" id="zzz"><span>Z</span><span>z</span><span>z</span></div>
-      <div class="pet egg" id="pet"><canvas id="cv" width="160" height="160"></canvas><div class="shadow"></div></div>
+      <div class="pet egg" id="pet"><canvas id="cv" width="210" height="210"></canvas><div class="shadow"></div></div>
       <div class="note" id="note" onclick="openOv('ovAway')"></div>
     </div>
     <div class="actions" id="actions"></div>
@@ -210,24 +227,15 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
 
   <section class="screen" id="scr-shop"><div class="scroll">
     <h2>Магазин</h2>
-    <div class="lead">Монетки зарабатываются в игре (поиграй с питомцем). Stars — реальные деньги через Telegram. Всё за Stars игрок видит заранее, без случайных сюрпризов.</div>
+    <div class="lead">Монетки даются за уход и игры с питомцем. Всё покупается за них.</div>
     <div class="sec">Еда · за монетки</div>
     <div class="grid">
       <button class="item" data-coin="10" data-food="20" data-name="Яблоко"><span class="ic">🍎</span><div class="nm">Яблоко</div><div class="pr coin">🪙 10</div></button>
       <button class="item" data-coin="25" data-food="50" data-name="Пицца"><span class="ic">🍕</span><div class="nm">Пицца</div><div class="pr coin">🪙 25</div></button>
     </div>
-    <div class="sec">Гардероб и домик · Stars</div>
-    <div class="grid">
-      <button class="item" data-star="Шапка-ушанка"><span class="ic">🧢</span><div class="nm">Шапка-ушанка</div><div class="pr">⭐ 60</div></button>
-      <button class="item" data-star="Пижама"><span class="ic">🌙</span><div class="nm">Пижама</div><div class="pr">⭐ 40</div></button>
-      <button class="item" data-star="Ночник-гриб"><span class="ic">🍄</span><div class="nm">Ночник-гриб</div><div class="pr">⭐ 50</div></button>
-      <button class="item" data-star="Новогодний набор"><span class="ic">🎄</span><div class="nm">Новогодний набор</div><div class="pr">⭐ 150</div></button>
-    </div>
-    <div class="sec">Помощь · Stars</div>
-    <div class="grid">
-      <button class="item" data-star="Лекарство"><span class="ic">💊</span><div class="nm">Вылечить</div><div class="pr">⭐ 25</div></button>
-      <button class="item" data-star="Заморозка стрика"><span class="ic">🧊</span><div class="nm">Заморозить стрик</div><div class="pr">⭐ 15</div></button>
-    </div>
+    <div class="sec">Одежда · за монетки</div>
+    <div class="lead" style="margin-bottom:8px">Купи и надень. Одна вещь на каждое место: тело, шея, глаза, голова, спина.</div>
+    <div class="grid" id="wardrobe"></div>
   </div></section>
 
   <nav class="tabs">
@@ -239,7 +247,7 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
   <!-- hatch + name -->
   <div class="overlay" id="ovHatch"><div class="modal">
     <h2 id="hatchTitle">Кто-то вылупился!</h2>
-    <div class="rays"><canvas class="hero" id="cvHatch" width="160" height="160"></canvas></div>
+    <div class="rays"><canvas class="hero" id="cvHatch" width="210" height="210"></canvas></div>
     <p id="hatchText"></p>
     <input class="name-in" id="nameIn" maxlength="14" placeholder="Имя питомца">
     <div class="sugg" id="sugg"></div>
@@ -248,7 +256,7 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
 
   <div class="overlay" id="ovEvolve"><div class="modal">
     <h2 id="evTitle">Вырос!</h2>
-    <div class="rays"><canvas class="hero" id="cvEvolve" width="160" height="160"></canvas></div>
+    <div class="rays"><canvas class="hero" id="cvEvolve" width="210" height="210"></canvas></div>
     <p id="evText"></p>
     <button class="btn star" onclick="toast('Тут будет карточка для сторис 📸')">Поделиться в сторис</button>
     <button class="btn sec" onclick="closeOv('ovEvolve')">Ура!</button>
@@ -429,12 +437,13 @@ const KEY='piksik_v2';
 function fresh(mode){
   return {v:2,stage:'egg',species:null,persona:null,name:'',stats:{food:70,fun:70,clean:70,energy:70},
     care:{food:0,fun:0,clean:0,sleep:0},neglect:0,zero:0,coins:120,streak:1,lastDay:dayKey(),
-    sleeping:false,warmth:0,away:false,mode:mode||'real',hatchedAt:0,last:Date.now(),hinted:false};
+    sleeping:false,warmth:0,away:false,mode:mode||'real',hatchedAt:0,last:Date.now(),hinted:false,owned:[],wear:{}};
 }
 function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 let S;
 try{ S=JSON.parse(localStorage.getItem(KEY)||'null') }catch(e){ S=null }
 if(!S||S.v!==2) S=fresh();
+if(!S.owned)S.owned=[]; if(!S.wear)S.wear={};
 /* ---- Telegram: автологин + облачное сохранение ---- */
 const TG=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)?Telegram.WebApp:null;
 const CLOUD=TG&&TG.CloudStorage&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')?TG.CloudStorage:null;
@@ -473,28 +482,120 @@ const $=id=>document.getElementById(id);
 const cv=$('cv'),pet=$('pet'),room=$('room'),bubble=$('bubble');
 let blink=false;
 
-function spriteFor(species,persona,stage){
-  if(stage==='egg') return {rows:EGG,pal:{w:'#fff4dc',s:'#ffb3c7'},patch:[]};
-  const sp=SPECIES[species];
-  return {rows:SPRITES[species],pal:sp.pal,patch:(stage==='adult'&&persona)?PERSONAS[persona].patch:[]};
+/* ---- тела и одежда (сетка 26×26, голова 16×16 ставится сверху) ---- */
+const GN=30,HX=7;
+const BODY=[
+"...........kbllllbk...........",
+"..........kbbllllbbk..........",
+"..........kbbllllbbk..........",
+".........kbbbllllbbbk.........",
+".........kbbbllllbbbk.........",
+"........kbbbbllllbbbbk........",
+"........kbkbbllllbbkbk........",
+".......kbbkbbllllbbkbbk.......",
+".......kbbkbbbllbbbkbbk.......",
+".......kbbkbbbkkbbbkbbk.......",
+".......kbbkbbbkkbbbkbbk.......",
+".......kbbkbbbkkbbbkbbk.......",
+".......kbbklllkklllkbbk.......",
+"........kkkkkkkkkkkkkk........"
+];
+const TAILS={
+  cat:[[23,26],[24,26],[24,25],[25,24],[25,23],[25,22],[24,21],[24,20]],
+  dog:[[23,25],[24,24],[25,23],[25,22]],
+  hamster:[],
+  bunny:[[23,26,'l'],[24,26,'l'],[23,25,'l'],[24,25,'l'],[25,26,'l'],[25,25,'l']]
+};
+const CROWN_Y={cat:2,dog:0,hamster:1,bunny:2};
+const WEARPAL={R:'#e2384d',S:'#ff5a5f',V:'#ff6fb1',C:'#b8333f',Y:'#ffcf33',G:'#ff4d6d',m:'#141218',H:'#ff8fc7',
+  u:'#7c5cff',U:'#5b3fd6',x:'#3d7bff',X:'#f4f7ff',j:'#ffd23f',J:'#e8a800',o:'#53c78b',O:'#2f9e68'};
+const CLOTH={hoodie:{c1:'u',c2:'U'},stripes:{c1:'x',c2:'X',stripe:true},raincoat:{c1:'j',c2:'J'},green:{c1:'o',c2:'O',stripe:true}};
+const ITEMS=[
+  {id:'scarf',slot:'neck',name:'Шарф',ic:'🧣',price:40},
+  {id:'bow',slot:'neck',name:'Бабочка',ic:'🎀',price:50},
+  {id:'collar',slot:'neck',name:'Ошейник с колокольчиком',ic:'🔔',price:60},
+  {id:'hoodie',slot:'body',name:'Худи',ic:'🟣',price:80},
+  {id:'stripes',slot:'body',name:'Полосатый свитер',ic:'🧶',price:100},
+  {id:'green',slot:'body',name:'Свитер с ёлочкой',ic:'🎄',price:110},
+  {id:'raincoat',slot:'body',name:'Дождевик',ic:'🌧️',price:120},
+  {id:'shades',slot:'eyes',name:'Тёмные очки',ic:'🕶️',price:90},
+  {id:'pink',slot:'eyes',name:'Розовые очки',ic:'🩷',price:110},
+  {id:'cape',slot:'back',name:'Плащ героя',ic:'🦸',price:150},
+  {id:'crown',slot:'head',name:'Корона',ic:'👑',price:200}
+];
+const SLOT_NAME={neck:'шея',body:'тело',eyes:'глаза',back:'спина',head:'голова'};
+function mk(n){return Array.from({length:n},()=>Array(n).fill('.'))}
+function gp(g,x,y,c){x=Math.round(x);y=Math.round(y);if(y>=0&&y<g.length&&x>=0&&x<g.length)g[y][x]=c}
+function ge(g,cx,cy,rx,ry,c){for(let y=0;y<g.length;y++)for(let x=0;x<g.length;x++){const a=(x+.5-cx)/rx,b=(y+.5-cy)/ry;if(a*a+b*b<=1)g[y][x]=c}}
+function spriteFor(species,persona,stage,wear){
+  if(stage==='egg') return {rows:EGG.map(r=>r.split('')),pal:{w:'#fff4dc',s:'#ffb3c7'}};
+  const sp=SPECIES[species]; wear=wear||{};
+  const head=SPRITES[species].map(r=>r.split(''));
+  if(stage==='adult'&&persona) PERSONAS[persona].patch.forEach(([x,y,c])=>{head[y][x]=c});
+  const g=mk(GN);
+  if(wear.back==='cape') for(let y=15;y<=26;y++){const w=(y-15)*0.55;for(let x=Math.round(9-w);x<=Math.round(20+w);x++)gp(g,x,y,'R')}
+  TAILS[species].forEach(([x,y,c])=>gp(g,x,y,c||'b'));
+  BODY.forEach((r,i)=>{for(let x=0;x<GN;x++){const c=r[x];if(c!=='.')g[15+i][x]=c}});
+  const B=wear.body&&CLOTH[wear.body];
+  if(B) for(let y=15;y<=26;y++)for(let x=0;x<GN;x++){ if(g[y][x]==='b'||g[y][x]==='l') g[y][x]=(B.stripe&&y%2)?B.c2:(B.stripe?B.c1:(g[y][x]==='l'?B.c2:B.c1)); }
+  head.forEach((r,y)=>r.forEach((c,x)=>{ if(c!=='.') g[y][x+HX]=c }));
+  if(wear.neck==='scarf'){ for(let x=11;x<=18;x++)gp(g,x,15,'S'); for(let x=10;x<=19;x++)gp(g,x,16,'S'); [[17,17],[18,17],[17,18],[18,18],[17,19],[18,19],[17,20]].forEach(([x,y])=>gp(g,x,y,'S')) }
+  if(wear.neck==='bow'){ [[11,15],[12,15],[13,15],[11,16],[12,16],[11,17],[16,15],[17,15],[18,15],[17,16],[18,16],[18,17]].forEach(([x,y])=>gp(g,x,y,'V')); gp(g,14,15,'k');gp(g,15,15,'k');gp(g,14,16,'V');gp(g,15,16,'V') }
+  if(wear.neck==='collar'){ for(let x=11;x<=18;x++)gp(g,x,15,'C'); [[14,16],[15,16],[14,17],[15,17]].forEach(([x,y])=>gp(g,x,y,'Y')) }
+  if(wear.eyes==='shades'||wear.eyes==='pink'){
+    const c=wear.eyes==='shades'?'m':'H';
+    for(let x=4;x<=11;x++)for(let y=8;y<=9;y++)gp(g,x+HX,y,c);
+    gp(g,3+HX,8,'m'); gp(g,12+HX,8,'m'); gp(g,5+HX,8,'w'); gp(g,9+HX,8,'w');
+  }
+  if(wear.head==='crown'){
+    const y0=CROWN_Y[species];
+    [[6,0],[9,0],[6,1],[7,1],[8,1],[9,1],[6,2],[9,2]].forEach(([x,y])=>gp(g,x+HX,y0+y,'Y'));
+    gp(g,7+HX,y0+2,'G'); gp(g,8+HX,y0+2,'G');
+  }
+  const o=g.map(r=>r.slice());
+  for(let y=0;y<GN;y++)for(let x=0;x<GN;x++){
+    if(o[y][x]!=='.')continue;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      const xx=x+dx,yy=y+dy;
+      if(xx>=0&&yy>=0&&xx<GN&&yy<GN&&o[yy][xx]!=='.'&&o[yy][xx]!=='k'){g[y][x]='k';break}
+    }
+  }
+  return {rows:g,pal:Object.assign({},WEARPAL,sp.pal)};
 }
 function draw(canvas,spr,opt={}){
-  const ctx=canvas.getContext('2d'),s=canvas.width/16;
+  const g=spr.rows.map(r=>typeof r==='string'?r.split(''):r.slice());
+  const ctx=canvas.getContext('2d'),s=canvas.width/g.length;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   const P=Object.assign({},BASE,spr.pal);
-  const g=spr.rows.map(r=>r.split(''));
-  (spr.patch||[]).forEach(([x,y,c])=>{g[y][x]=c});
   (opt.cracks||[]).forEach(([x,y])=>{g[y][x]='k'});
   const eyeRows=[]; g.forEach((r,i)=>{if(r.includes('E')||r.includes('W'))eyeRows.push(i)});
   const last=eyeRows[eyeRows.length-1];
   g.forEach((r,y)=>r.forEach((c,x)=>{
     if(opt.closed&&(c==='E'||c==='W')) c=(y===last)?'k':'b';
-    if(c==='.')return; ctx.fillStyle=P[c]||'#f0f'; ctx.fillRect(x*s,y*s,s,s);
+    if(c==='.')return; ctx.fillStyle=P[c]||'#f0f'; ctx.fillRect(Math.floor(x*s),Math.floor(y*s),Math.ceil(s),Math.ceil(s));
   }));
+}
+function renderShop(){
+  const box=$('wardrobe'); if(!box)return;
+  box.innerHTML=ITEMS.map(it=>{
+    const own=S.owned.includes(it.id), worn=S.wear[it.slot]===it.id;
+    const pr=worn?'<div class="pr own">надето · снять</div>':own?'<div class="pr own">надеть</div>':`<div class="pr coin">🪙 ${it.price}</div>`;
+    return `<button class="item ${worn?'worn':''}" onclick="wearItem('${it.id}')"><span class="ic">${it.ic}</span><div class="nm">${it.name}</div><div class="slot">${SLOT_NAME[it.slot]}</div>${pr}</button>`;
+  }).join('');
+}
+function wearItem(id){
+  const it=ITEMS.find(i=>i.id===id);
+  if(S.stage==='egg'||S.away){toast('Сначала нужен питомец 🙂');return}
+  if(!S.owned.includes(id)){
+    if(S.coins<it.price){toast('Не хватает монеток — поухаживай за питомцем 🎾');return}
+    S.coins-=it.price; S.owned.push(id); S.wear[it.slot]=id; toast(it.name+' — куплено и надето! ✨');
+  } else if(S.wear[it.slot]===id){ delete S.wear[it.slot]; toast(it.name+' — снято'); }
+  else { S.wear[it.slot]=id; toast(it.name+' — надето'); }
+  buzz(); update(); renderShop();
 }
 function crackLevel(){return S.warmth>=8?3:S.warmth>=5?2:S.warmth>=2?1:0}
 function render(){
-  const spr=spriteFor(S.species,S.persona,S.stage);
+  const spr=spriteFor(S.species,S.persona,S.stage,S.wear);
   const cracks=S.stage==='egg'?CRACKS[crackLevel()]:[];
   draw(cv,spr,{closed:(blink||S.sleeping)&&S.stage!=='egg',cracks});
   draw($('ava'),spr,{cracks});
@@ -587,7 +688,7 @@ function confirmName(){
   closeOv('ovHatch'); update(); setTimeout(()=>say(pick(SPECIES[S.species].sound)+' ты мама?'),300);
   if(!S.hinted){S.hinted=true;save();setTimeout(()=>toast('Хочешь увидеть всё быстро — ⚙️ → «Быстро (демо)»'),3200)}
 }
-function careDone(type){S.care[type]++;checkGrow()}
+function careDone(type){S.care[type]++;S.coins+=2;checkGrow()}
 function feed(){
   if(S.stats.food>95){say('я уже наелся… 😵');S.stats.fun=clamp(S.stats.fun-5);anim('wobble');update();return}
   S.stats.food=clamp(S.stats.food+30);buzz();burst(pick(['🍙','🍕','🍎','🥕']),3);anim('jump');
@@ -601,7 +702,7 @@ function wash(){
 }
 function play(){
   if(S.stats.energy<15){say('сил нет… 😴');anim('wobble');return}
-  S.stats.fun=clamp(S.stats.fun+25);S.stats.energy=clamp(S.stats.energy-12);S.coins+=5;
+  S.stats.fun=clamp(S.stats.fun+25);S.stats.energy=clamp(S.stats.energy-12);S.coins+=8;
   buzz();burst('🎾',2);burst('🪙',2);anim('jump');
   say(S.persona==='fidget'?'ЕЩЁ! ЕЩЁ! ЕЩЁ!':pick(['уиии!','поймал!','давай ещё!']));
   careDone('fun');update();
@@ -636,7 +737,7 @@ function choosePersona(){
 function evolve(persona){
   S.stage='adult';S.persona=persona;
   const P=PERSONAS[persona],sp=SPECIES[S.species];
-  draw($('cvEvolve'),spriteFor(S.species,persona,'adult'));
+  draw($('cvEvolve'),spriteFor(S.species,persona,'adult',S.wear));
   $('evTitle').textContent=(S.name||sp.adult)+' вырос!';
   $('evText').innerHTML=`Характер: <b>${P.name}</b>. ${P.char}<br><br><i>«${pick(P.phrases)}»</i>`;
   update();openOv('ovEvolve');burst('✨',12);
@@ -713,11 +814,11 @@ function renderChars(){
   const key=S.species+'|'+S.persona; if(key===charKey)return; charKey=key;
   let h='<h2>Персонажи</h2><div class="lead">Из яйца вылупляется случайное животное — это бесплатно. Через ~неделю у него складывается характер, и зависит он от того, как ты заботился(лась).</div>';
   h+='<div class="sec">Кто может вылупиться</div><div class="species">';
-  Object.keys(SPECIES).forEach(k=>{h+=`<div class="sp ${S.species===k?'cur':''}"><canvas data-s="${k}" width="64" height="64"></canvas>${SPECIES[k].name}</div>`});
+  Object.keys(SPECIES).forEach(k=>{h+=`<div class="sp ${S.species===k?'cur':''}"><canvas data-s="${k}" width="90" height="90"></canvas>${SPECIES[k].name}</div>`});
   h+='</div><div class="sec">Характеры'+(S.species?' · '+SPECIES[sp].adult.toLowerCase():'')+'</div>';
   Object.keys(PERSONAS).forEach(k=>{
     const P=PERSONAS[k],cur=S.persona===k;
-    h+=`<div class="ccard ${cur?'cur':''}"><div class="pic"><canvas data-p="${k}" width="64" height="64"></canvas></div><div>
+    h+=`<div class="ccard ${cur?'cur':''}"><div class="pic"><canvas data-p="${k}" width="90" height="90"></canvas></div><div>
       <div class="nm">${P.name}${cur?' <span class="tag">сейчас</span>':''}</div>
       <div class="how">${P.how}</div><div class="ch">${P.char}</div><div class="ph">«${P.phrases[0]}»</div></div></div>`;
   });
@@ -730,7 +831,7 @@ function renderChars(){
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$('scr-'+t.dataset.tab).classList.add('on');
-  setTimeout(placeBubble,0);
+  setTimeout(placeBubble,0); if(t.dataset.tab==='shop')renderShop();
 }));
 document.querySelectorAll('[data-coin]').forEach(b=>b.addEventListener('click',()=>{
   const c=+b.dataset.coin;
@@ -738,7 +839,6 @@ document.querySelectorAll('[data-coin]').forEach(b=>b.addEventListener('click',(
   if(S.coins<c){toast('Не хватает монеток — поиграй с питомцем 🎾');return}
   S.coins-=c;S.stats.food=clamp(S.stats.food+(+b.dataset.food));update();toast(b.dataset.name+' — съедено! 😋');
 }));
-document.querySelectorAll('[data-star]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.star+': оплата Stars появится в Telegram-версии ⭐')));
 
 /* ============ НАСТРОЙКИ / ДЕМО ============ */
 function openSettings(){syncMode();openOv('ovSettings')}
@@ -758,7 +858,14 @@ function demoReset(){
   const m=S.mode,st=S.streak;S=fresh(m);S.streak=st;S.hinted=true;update();say('*тук-тук*',1500);
 }
 
-update();
+(function(){
+  const cols=['#ffffff','#1c57d6','#d52b1e']; let svg='<svg viewBox="0 0 400 46" preserveAspectRatio="none"><path d="M0 8 Q200 30 400 8" stroke="#2b2140" stroke-width="2.5" fill="none"/>';
+  for(let i=0;i<14;i++){const x=6+i*28.5,t=i/13,y=8+22*4*t*(1-t)*0.5*2*0.5*2;const yy=8+ (30-8)*4*t*(1-t)*0.5*2*0.5;
+    svg+=`<path d="M${x} ${yy} L${x+20} ${yy} L${x+10} ${yy+18} Z" fill="${cols[i%3]}" stroke="#2b2140" stroke-width="2" stroke-linejoin="round"/>`}
+  $('bunting').innerHTML=svg+'</svg>';
+  const d=new Date(); if(d.getMonth()===10&&d.getDate()<=6) room.classList.add('holiday');
+})();
+update(); renderShop();
 cloudLoad();
 if(TGUSER&&S.stage==='egg') setTimeout(()=>toast('Привет, '+TGUSER.first_name+'! Твоё яйцо уже ждёт 🥚'),900);
 if(S.away) setTimeout(()=>runAway(),300);
