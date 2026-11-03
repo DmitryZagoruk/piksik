@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#f3eefc">
 <title>Пиксик — тамагочи (концепт)</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
   --bg:#f3eefc; --ink:#2b2140; --muted:#7a7090; --card:#ffffff; --line:#ece6f7;
@@ -294,7 +295,7 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
 
 <aside class="side">
   <h1>🐾 Пиксик</h1>
-  <div class="sub">Концепт тамагочи для мини-приложения Telegram. Рабочее название, арт — набросок. Работает без интернета, прогресс сохраняется в этом браузере.</div>
+  <div class="sub">Концепт тамагочи для мини-приложения Telegram. Рабочее название, арт — набросок. В Telegram прогресс сохраняется в облаке Telegram, в браузере — в этом браузере.</div>
   <div class="panel"><h3>Что попробовать</h3><ul>
     <li>Тапай яйцо — вылупится котёнок, щенок, хомяк или зайка</li>
     <li>Дай ему имя и ухаживай</li>
@@ -434,7 +435,32 @@ function dayKey(d){d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'
 let S;
 try{ S=JSON.parse(localStorage.getItem(KEY)||'null') }catch(e){ S=null }
 if(!S||S.v!==2) S=fresh();
-function save(){ S.last=Date.now(); try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} }
+/* ---- Telegram: автологин + облачное сохранение ---- */
+const TG=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)?Telegram.WebApp:null;
+const CLOUD=TG&&TG.CloudStorage&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')?TG.CloudStorage:null;
+const TGUSER=TG&&TG.initDataUnsafe&&TG.initDataUnsafe.user||null;
+if(TG){try{TG.ready();TG.expand();TG.setHeaderColor&&TG.setHeaderColor('#ffffff')}catch(e){}}
+let cloudT=0,cloudPending=false;
+function cloudSave(){
+  if(!CLOUD)return;
+  const now=Date.now();
+  if(now-cloudT<3000){ if(!cloudPending){cloudPending=true;setTimeout(()=>{cloudPending=false;cloudSave()},3000)} return }
+  cloudT=now;
+  try{CLOUD.setItem(KEY,JSON.stringify(S),()=>{})}catch(e){}
+}
+function save(){ S.last=Date.now(); try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} cloudSave(); }
+function cloudLoad(){
+  if(!CLOUD)return;
+  try{CLOUD.getItem(KEY,(err,val)=>{
+    if(err||!val)return;
+    let c=null; try{c=JSON.parse(val)}catch(e){}
+    if(c&&c.v===2&&(c.last||0)>(S.last||0)){
+      S=c; let dt=Math.min((Date.now()-S.last)/1000,14*86400);
+      while(dt>0&&!S.away){const d=Math.min(dt,600);step(d);dt-=d}
+      actKey='';charKey='';update(); if(S.away) runAway();
+    }
+  })}catch(e){}
+}
 
 /* streak */
 (function(){
@@ -532,7 +558,7 @@ function burst(e,n=6){
     s.style.animationDelay=(i*60)+'ms';room.appendChild(s);setTimeout(()=>s.remove(),1500);
   }
 }
-function buzz(){try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}}
+function buzz(){try{if(TG&&TG.HapticFeedback){TG.HapticFeedback.impactOccurred('light');return}navigator.vibrate&&navigator.vibrate(15)}catch(e){}}
 let tT;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>e.classList.remove('on'),2400)}
 function openOv(id){$(id).classList.add('on')}
 function closeOv(id){$(id).classList.remove('on')}
@@ -733,6 +759,8 @@ function demoReset(){
 }
 
 update();
+cloudLoad();
+if(TGUSER&&S.stage==='egg') setTimeout(()=>toast('Привет, '+TGUSER.first_name+'! Твоё яйцо уже ждёт 🥚'),900);
 if(S.away) setTimeout(()=>runAway(),300);
 else setTimeout(()=>say(S.stage==='egg'?'*тук-тук*':(S.name?S.name+' рад тебя видеть!':'привет!'),1800),600);
 </script>
