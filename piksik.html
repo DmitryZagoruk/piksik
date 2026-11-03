@@ -57,33 +57,66 @@ button{font-family:inherit}
 .bar i{display:block;height:100%;width:70%;background:var(--green);border-radius:6px;transition:width .4s,background .4s}
 .bar.mid i{background:#ffb648}.bar.low i{background:var(--red)}
 
-/* room */
-.room{position:relative;flex:1;min-height:300px;overflow:hidden;background:repeating-linear-gradient(90deg,#fde8f0 0 24px,#fbdfe9 24px 48px)}
-.floor{position:absolute;left:0;right:0;bottom:0;height:34%;background-image:conic-gradient(#ecc9a3 25%,#f5dcbf 0 50%,#ecc9a3 0 75%,#f5dcbf 0);background-size:32px 32px;border-top:4px solid #c99a72}
-.window{position:absolute;top:9%;left:8%;width:80px;height:68px;border:5px solid var(--ink);border-radius:4px;background:linear-gradient(#9fdcff,#d9f2ff);overflow:hidden}
-.window::before,.window::after{content:'';position:absolute;background:var(--ink)}
+/* room — объёмная комната */
+.room{position:relative;flex:1;min-height:300px;overflow:hidden;background:#f3cfdc}
+.wall-back{position:absolute;left:11%;right:11%;top:0;height:60%;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(120,60,90,.08)),repeating-linear-gradient(90deg,#fde9f1 0 22px,#fadfea 22px 44px)}
+.wall-back::after{content:'';position:absolute;left:0;right:0;bottom:0;height:12px;background:linear-gradient(#e7b9cb,#d9a3b9);border-top:3px solid #c98fa7}
+.wall-l,.wall-r{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#f6d3e0 0 14px,#f1c9d8 14px 28px)}
+.wall-l{clip-path:polygon(0 0,11% 0,11% 60%,0 74%);background-image:linear-gradient(90deg,rgba(90,40,70,.18),rgba(90,40,70,.04)),repeating-linear-gradient(90deg,#f6d3e0 0 10px,#f1c9d8 10px 20px)}
+.wall-r{clip-path:polygon(89% 0,100% 0,100% 74%,89% 60%);background-image:linear-gradient(270deg,rgba(90,40,70,.18),rgba(90,40,70,.04)),repeating-linear-gradient(90deg,#f6d3e0 0 10px,#f1c9d8 10px 20px)}
+.edge{position:absolute;inset:0;pointer-events:none}
+.edge svg{width:100%;height:100%;display:block}
+.floor{position:absolute;inset:0;clip-path:polygon(11% 60%,89% 60%,100% 74%,100% 100%,0 100%,0 74%);perspective:380px;perspective-origin:50% 0%;overflow:hidden;background:#e9c7a3}
+.floor i{position:absolute;left:-80%;right:-80%;top:60%;height:220%;transform-origin:50% 0;transform:rotateX(64deg);
+  background-image:conic-gradient(#e5bd93 25%,#f3d8b8 0 50%,#e5bd93 0 75%,#f3d8b8 0);background-size:64px 64px;background-position:center 0}
+.floor::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(80,40,30,.28) 60%,rgba(80,40,30,.05) 78%,rgba(255,255,255,.06))}
+.light{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 45% at 28% 30%,rgba(255,255,240,.45),transparent 70%)}
+.window{position:absolute;top:6%;left:16%;width:46%;max-width:180px;aspect-ratio:3/2;border:6px solid #fff;outline:4px solid var(--ink);border-radius:3px;overflow:hidden;background:#9fdcff;box-shadow:8px 10px 0 rgba(90,40,70,.16);z-index:1}
+.window::before,.window::after{content:'';position:absolute;background:#fff;z-index:5;box-shadow:0 0 0 2px var(--ink)}
 .window::before{left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%)}
-.window::after{top:50%;left:0;right:0;height:4px;transform:translateY(-50%)}
-.sun{position:absolute;width:16px;height:16px;background:#ffd84d;top:7px;right:7px;box-shadow:0 0 0 3px #ffe98a}
-.shelf{position:absolute;top:13%;right:8%;width:88px;height:8px;background:#c99a72;border:3px solid var(--ink)}
-.shelf span{position:absolute;bottom:7px;font-size:21px}
-.rug{position:absolute;left:50%;bottom:8%;width:210px;height:44px;transform:translateX(-50%);border-radius:50%;background:#b9a8ff;border:4px solid #9a86f5}
-.room.night{background:repeating-linear-gradient(90deg,#3b3463 0 24px,#37305d 24px 48px)}
-.room.night .floor,.room.night .rug,.room.night .shelf,.room.night .bunting,.room.night .banner{filter:brightness(.45)}
-.bunting{position:absolute;left:-4%;right:-4%;top:2%;height:46px;display:none;z-index:1}
-.bunting svg{width:100%;height:100%;display:block}
-.banner{position:absolute;left:50%;top:10%;transform:translateX(-50%) rotate(-1.5deg);display:none;z-index:1;
-  background:#fffaf0;border:4px solid var(--ink);padding:8px 14px 10px;font-family:var(--mono);font-weight:800;font-size:15px;
-  line-height:1.25;text-align:center;color:var(--ink);box-shadow:5px 5px 0 rgba(43,33,64,.18);white-space:nowrap}
-.banner small{display:block;font-size:11px;font-weight:700;color:#6b6280;margin-top:2px}
-.banner .tri{display:flex;height:6px;margin:6px -14px -10px}
-.banner .tri i{flex:1}
-.room.holiday .bunting,.room.holiday .banner{display:block}
-.room.holiday .window{top:33%}
-.room.holiday .shelf{top:36%}
-@media (max-width:380px){.banner{font-size:13px}}
-.room.night .window{background:linear-gradient(#1b1940,#2e2a66)}
-.room.night .sun{background:#fff6c9;box-shadow:0 0 0 3px #e9e1a8;border-radius:50%}
+.window::after{top:46%;left:0;right:0;height:4px}
+.sky{position:absolute;inset:0;background:linear-gradient(#7cc8ff,#cdeeff)}
+.sunm{position:absolute;width:18px;height:18px;right:14%;top:12%;background:#ffd84d;box-shadow:0 0 0 4px #ffe98a88}
+.cloud{position:absolute;height:9px;width:34px;background:#fff;border-radius:2px;box-shadow:8px -6px 0 -1px #fff,18px -3px 0 0 #fff;opacity:.95;animation:cloud linear infinite}
+@keyframes cloud{from{transform:translateX(-60px)}to{transform:translateX(240px)}}
+.city{position:absolute;left:0;right:0;bottom:22%;height:46%;display:flex;align-items:flex-end;gap:2px}
+.bld{flex:1;background:#8aa0c8;border:2px solid #5d6f99;border-bottom:0;
+  background-image:linear-gradient(90deg,transparent 3px,#cfe0ff 3px 6px,transparent 6px),linear-gradient(transparent 3px,rgba(0,0,0,0) 3px);background-size:9px 9px}
+.bld:nth-child(2n){background-color:#9eb0d4}.bld:nth-child(3n){background-color:#7b8fbb}
+.road{position:absolute;left:0;right:0;bottom:0;height:22%;background:#55516a;border-top:3px solid #3b3850}
+.road::after{content:'';position:absolute;left:0;right:0;top:45%;height:2px;background:repeating-linear-gradient(90deg,#f2e9a0 0 10px,transparent 10px 20px)}
+.car{position:absolute;bottom:4%;width:30px;height:15px;animation:drive linear infinite}
+.car svg{width:100%;height:100%;display:block;shape-rendering:crispEdges}
+.car.back{bottom:30%;animation-name:driveback;transform:scaleX(-1)}
+@keyframes drive{from{left:-40px}to{left:110%}}
+@keyframes driveback{from{left:110%}to{left:-40px}}
+.curtain{position:absolute;top:4%;width:30px;height:calc(min(46%,180px) * .66 + 28px);z-index:2;
+  background:repeating-linear-gradient(90deg,#ff9fb8 0 6px,#f2839f 6px 10px);border:3px solid var(--ink);border-radius:0 0 10px 10px;box-shadow:4px 6px 0 rgba(90,40,70,.14)}
+.curtain.l{left:calc(16% - 22px)}.curtain.r{left:calc(16% + min(46%,180px) - 8px)}
+.rod{position:absolute;top:3%;left:calc(16% - 30px);width:calc(min(46%,180px) + 60px);height:6px;background:#a0673e;border:3px solid var(--ink);border-radius:4px;z-index:3}
+.furn{position:absolute;image-rendering:pixelated;filter:drop-shadow(6px 6px 0 rgba(60,30,40,.16))}
+#fSofa{left:2%;bottom:calc(40% - 20px);width:37%;max-width:156px}
+#fLamp{left:1%;bottom:11%;width:12%;max-width:50px}
+#fTree{right:2%;bottom:19%;width:19%;max-width:80px}
+#fBowl{right:20%;bottom:7%;width:13%;max-width:56px}
+#fPic{right:13%;top:11%;width:14%;max-width:58px;filter:drop-shadow(4px 5px 0 rgba(60,30,40,.14))}
+.lampglow{position:absolute;left:-14%;bottom:calc(11% + 60px);width:56%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,232,160,.75),rgba(255,210,120,.28) 40%,transparent 70%);display:none;pointer-events:none}
+.rug{position:absolute;left:50%;bottom:9%;width:230px;height:52px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#c9bbff,#a796f7);border:4px solid #8a76ef;box-shadow:0 6px 0 #6d58d8,0 14px 18px rgba(60,30,40,.18)}
+.room.night .sky{background:linear-gradient(#141238,#2c2a66)}
+.room.night .sunm{background:#fff6c9;border-radius:50%;box-shadow:0 0 0 4px #fff6c933,-60px 10px 0 -7px #fff,-90px 22px 0 -8px #fff,-30px 30px 0 -8px #fff}
+.room.night .cloud{opacity:.25}
+.room.night .bld{background-color:#2c2f55;border-color:#1c1e3c;background-image:linear-gradient(90deg,transparent 3px,#ffd970 3px 6px,transparent 6px)}
+.room.night .bld:nth-child(3n){background-image:linear-gradient(90deg,transparent 3px,#3a3e6a 3px 6px,transparent 6px)}
+.room.night .road{background:#2a2838}
+.room.night .lampglow{display:block}
+.room.night .furn,.room.night .curtain,.room.night .rod{filter:brightness(.5) saturate(.8)}
+.room.night #fLamp{filter:brightness(1)}
+.room.night #fPic{filter:brightness(.5) saturate(.8)}
+.room.night .car svg rect[fill='#ffe36b']{filter:drop-shadow(0 0 3px #ffe36b)}
+.room.night{background:#2d2852}
+.room.night .wall-back,.room.night .wall-l,.room.night .wall-r,.room.night .floor,.room.night .rug{filter:brightness(.42) saturate(.8)}
+.room.night .light{background:radial-gradient(ellipse 50% 40% at 28% 30%,rgba(180,190,255,.18),transparent 70%)}
 
 .pet{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);cursor:pointer;user-select:none;-webkit-user-select:none}
 .pet canvas{width:250px;height:250px;image-rendering:pixelated;display:block;animation:bob 1.6s ease-in-out infinite}
@@ -209,11 +242,24 @@ select{width:100%;padding:10px;border-radius:12px;border:2px solid var(--line);f
       <div class="stat"><span class="ic">⚡</span><div class="bar" id="b-energy"><i></i></div>энергия</div>
     </div>
     <div class="room" id="room">
-      <div class="bunting" id="bunting"></div>
-      <div class="banner">С Днём<br>народного единства!<small>4 ноября</small><div class="tri"><i style="background:#fff"></i><i style="background:#1c57d6"></i><i style="background:#d52b1e"></i></div></div>
-      <div class="window"><div class="sun"></div></div>
-      <div class="shelf"><span style="left:5px">🪴</span><span style="left:50px">📚</span></div>
-      <div class="floor"></div><div class="rug"></div>
+      <div class="wall-back"></div><div class="wall-l"></div><div class="wall-r"></div>
+      <div class="floor"><i></i></div>
+      <div class="edge"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M11 0 V60 L0 74 M89 0 V60 L100 74 M11 60 H89" stroke="#c98fa7" stroke-width="0.5" fill="none" vector-effect="non-scaling-stroke"/></svg></div>
+      <div class="light"></div>
+      <div class="rod"></div>
+      <div class="window"><div class="sky"></div><div class="sunm"></div>
+        <div class="cloud" style="top:10%;animation-duration:38s"></div><div class="cloud" style="top:26%;animation-duration:55s;animation-delay:-20s"></div>
+        <div class="city"><div class="bld" style="height:70%"></div><div class="bld" style="height:95%"></div><div class="bld" style="height:55%"></div><div class="bld" style="height:85%"></div><div class="bld" style="height:65%"></div><div class="bld" style="height:100%"></div></div>
+        <div class="road" id="road"></div>
+      </div>
+      <div class="curtain l"></div><div class="curtain r"></div>
+      <canvas class="furn" id="fPic"></canvas>
+      <canvas class="furn" id="fSofa"></canvas>
+      <div class="lampglow"></div>
+      <canvas class="furn" id="fLamp"></canvas>
+      <canvas class="furn" id="fTree"></canvas>
+      <div class="rug"></div>
+      <canvas class="furn" id="fBowl"></canvas>
       <div class="warm" id="warm">🔥 Тепло: 0 / 10</div>
       <div class="bubble" id="bubble"></div>
       <div class="zzz" id="zzz"><span>Z</span><span>z</span><span>z</span></div>
@@ -858,13 +904,58 @@ function demoReset(){
   const m=S.mode,st=S.streak;S=fresh(m);S.streak=st;S.hinted=true;update();say('*тук-тук*',1500);
 }
 
-(function(){
-  const cols=['#ffffff','#1c57d6','#d52b1e']; let svg='<svg viewBox="0 0 400 46" preserveAspectRatio="none"><path d="M0 8 Q200 30 400 8" stroke="#2b2140" stroke-width="2.5" fill="none"/>';
-  for(let i=0;i<14;i++){const x=6+i*28.5,t=i/13,y=8+22*4*t*(1-t)*0.5*2*0.5*2;const yy=8+ (30-8)*4*t*(1-t)*0.5*2*0.5;
-    svg+=`<path d="M${x} ${yy} L${x+20} ${yy} L${x+10} ${yy+18} Z" fill="${cols[i%3]}" stroke="#2b2140" stroke-width="2" stroke-linejoin="round"/>`}
-  $('bunting').innerHTML=svg+'</svg>';
-  const d=new Date(); if(d.getMonth()===10&&d.getDate()<=6) room.classList.add('holiday');
-})();
+
+/* ---- интерьер: пиксельная мебель и улица за окном ---- */
+const FPAL={k:'#2b2140',c:'#5ec4b6',C:'#3a9e92',h:'#8ee6da',d:'#79d6c9',p:'#ff9fb2',P:'#ff7f9e',w:'#a0673e',W:'#7a4a2a',
+  s:'#fff1c7',S:'#f1d48a',m:'#5b5370',t:'#ece0cf',T:'#cbb495',q:'#dcb57f',Q:'#b48a52',r:'#ff5a6e',D:'#5a3a2a',
+  f:'#9b5a2e',F:'#c47a3e',B:'#3d7bff',b:'#7aa8ff',i:'#d6eeff',g:'#7ccf6a',G:'#4fa857',y:'#ffd84d'};
+function fgrid(w,h){return Array.from({length:h},()=>Array(w).fill('.'))}
+function fr(g,x0,y0,x1,y1,c){for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)if(g[y]&&x>=0&&x<g[0].length)g[y][x]=c}
+function fout(g){const h=g.length,w=g[0].length,o=g.map(r=>r.slice());
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(o[y][x]!=='.')continue;
+    for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<w&&Y<h&&o[Y][X]!=='.'&&o[Y][X]!=='k'){g[y][x]='k';break}}}
+  return g}
+function fdraw(id,g,sc){const c=$(id),h=g.length,w=g[0].length;c.width=w*sc;c.height=h*sc;const x=c.getContext('2d');
+  g.forEach((r,yy)=>r.forEach((ch,xx)=>{if(ch==='.')return;x.fillStyle=FPAL[ch]||'#f0f';x.fillRect(xx*sc,yy*sc,sc,sc)}))}
+function buildFurniture(){
+  // диван
+  let g=fgrid(34,18);
+  fr(g,3,1,30,8,'c'); fr(g,4,2,29,2,'h'); [[10,5],[17,5],[24,5]].forEach(([x,y])=>fr(g,x,y,x,y,'C'));
+  fr(g,1,5,5,13,'c'); fr(g,28,5,32,13,'c'); fr(g,2,5,4,5,'h'); fr(g,29,5,31,5,'h');
+  fr(g,6,9,16,12,'d'); fr(g,17,9,27,12,'d'); fr(g,6,9,27,9,'h'); fr(g,16,9,17,12,'C');
+  fr(g,22,4,26,8,'p'); fr(g,23,5,25,5,'P');
+  fr(g,1,13,32,14,'C'); fr(g,3,15,4,16,'w'); fr(g,29,15,30,16,'w');
+  fdraw('fSofa',fout(g),5);
+  // торшер
+  g=fgrid(12,36);
+  for(let y=1;y<=8;y++){const a=Math.round(3.4-y*.35),b=Math.round(8.6+y*.35);fr(g,a,y,b,y,y===7?'S':'s')}
+  fr(g,5,9,6,31,'m'); fr(g,2,32,9,34,'m'); fr(g,5,9,6,9,'y');
+  fdraw('fLamp',fout(g),4);
+  // когтеточка-домик
+  g=fgrid(20,38);
+  fr(g,2,1,17,9,'t'); fr(g,2,1,17,2,'T'); fr(g,8,4,11,9,'D'); fr(g,9,3,10,3,'D');
+  fr(g,1,10,18,11,'T');
+  for(let y=12;y<=29;y++) fr(g,8,y,11,y,y%2?'q':'Q');
+  fr(g,0,19,7,21,'t'); fr(g,0,21,7,21,'T');
+  fr(g,15,12,15,17,'k'); fr(g,14,18,16,20,'r');
+  fr(g,1,30,18,35,'t'); fr(g,1,34,18,35,'T');
+  fdraw('fTree',fout(g),4);
+  // миска
+  g=fgrid(14,8);
+  fr(g,4,0,9,1,'f'); fr(g,5,0,8,0,'F'); fr(g,1,2,12,6,'B'); fr(g,2,3,11,3,'b'); fr(g,3,7,10,7,'B');
+  fdraw('fBowl',fout(g),4);
+  // картина
+  g=fgrid(14,12);
+  fr(g,0,0,13,11,'w'); fr(g,1,1,12,10,'W'); fr(g,2,2,11,9,'i');
+  fr(g,2,7,11,9,'g'); fr(g,3,6,6,6,'g'); fr(g,8,5,10,6,'G'); fr(g,9,4,9,4,'G'); fr(g,9,3,10,3,'y');
+  fdraw('fPic',fout(g),4);
+}
+function carSVG(col){return `<svg viewBox="0 0 30 15"><rect x="2" y="6" width="26" height="6" fill="${col}"/><rect x="7" y="2" width="14" height="5" fill="${col}"/><rect x="9" y="3" width="4" height="3" fill="#cfefff"/><rect x="15" y="3" width="4" height="3" fill="#cfefff"/><rect x="26" y="7" width="2" height="2" fill="#ffe36b"/><rect x="5" y="11" width="5" height="4" fill="#2b2140"/><rect x="20" y="11" width="5" height="4" fill="#2b2140"/><rect x="2" y="6" width="26" height="1" fill="rgba(255,255,255,.35)"/></svg>`}
+function buildCars(){
+  const road=$('road'),cars=[['#ff5a6e',7,0,''],['#ffd23f',11,-4,'back'],['#53c78b',9,-6,''],['#3d7bff',13,-9,'back'],['#ffffff',16,-2,'']];
+  road.innerHTML=cars.map(([c,d,dl,b])=>`<div class="car ${b}" style="animation-duration:${d}s;animation-delay:${dl}s">${carSVG(c)}</div>`).join('');
+}
+buildFurniture(); buildCars();
 update(); renderShop();
 cloudLoad();
 if(TGUSER&&S.stage==='egg') setTimeout(()=>toast('Привет, '+TGUSER.first_name+'! Твоё яйцо уже ждёт 🥚'),900);
